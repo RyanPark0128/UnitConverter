@@ -53,7 +53,7 @@ class HomeScreen extends Component {
         key={cat.id}
         title={cat.name}
         type="solid"
-        onPress={() => navigate('Calculation')}
+        onPress={() => navigate('Calculation', {name: cat.name})}
       />  
     )
       return (
