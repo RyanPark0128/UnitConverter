@@ -3,10 +3,37 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button, Input } from 'react-native-elements'
 
 
+const category = [
+  {
+    id: 1,
+    name:"Length",
+  },
+
+  {
+    id: 2,
+    name: "Temperature",
+  },
+
+  {
+    id: 3,
+    name: "Currency"
+  },
+
+  {
+    id: 4,
+    name: "Volume",
+  },
+  
+  {
+    id: 5,
+    name: "Area",
+  }
+]
+
 const styles = StyleSheet.create({
   container: {
    flex: 1,
-   paddingTop: 22,
+   paddingTop: 20,
    backgroundColor: 'white',
    alignItems: 'center',
   },
@@ -22,28 +49,10 @@ const styles = StyleSheet.create({
   input: {
     paddingBottom: 50,
     width: 200
-  }
+  },
+  title : {
+  },
 })
-
-const category = [{
-  id: 1,
-  name:"Currency",
-  },
-  {
-  id: 2,
-  name: "Length",
-  },
-  {
-  id: 3,
-  name: "Speed"
-  },
-  {
-  id: 4,
-  name: "Temperature",
-  },
-  {id: 5,
-  name: "Power",
-}]
 
 class HomeScreen extends Component {
     render(){
@@ -58,6 +67,9 @@ class HomeScreen extends Component {
     )
       return (
         <View style={styles.container}>
+          <View style={styles.title}>
+            <Text>Converter</Text>
+          </View>
             <Input
                 placeholder='  Search'
                 leftIcon={{ type: 'font-awesome', name: 'search' }}
@@ -69,7 +81,6 @@ class HomeScreen extends Component {
             <View>
                 {ListCate}
             </View>
-        
         </View>
       )
     }
