@@ -1,5 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Button, View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,38 +29,100 @@ const styles = StyleSheet.create({
     flex:1,
     backgroundColor : "black",
     justifyContent : "space-around",
-    alignItems: "stretch",
+    alignItems: "center",
     
   },
   row: {
     flexDirection: "row",
     flex: 1,
     justifyContent: 'space-around',
-    alignItems: "center"
+    alignItems: "center",
+    fontSize: 30
+  },
+  ops: {
+    color: "white",
+    fontSize: 30
+  },
+  font: {
+    fontSize: 30
   }
 })
 
+
+
 class CalculationScreen extends Component {
     
+    constructor() {
+      super()
+      this.state = {
+        resultText: "",
+        period: true
+      }
+    }
     static navigationOptions = {
         header: null,
     };
+
+    buttonPressed(text) {
+      if (text == ".") {
+        if (this.state.period === false) {
+          this.setState({
+            resultText: 0
+          })
+        }
+        if (this.state.period === true) {
+          this.setState({
+            resultText: this.state.resultText + text,
+            period: false
+          })
+        }
+      }
+      if (text === "AC") {
+        this.setState({
+          resultText: ""
+        })
+      } else {
+      this.setState({
+        resultText: this.state.resultText + text
+      })
+      }
+    }
     render() {
+      let rows = []
+      let nums = [[1,2,3],[4,5,6],[7,8,9],[0, "AC", "."]]
+      for(let i = 0; i < 4; i++) {
+        let row = []
+        for(let j=0; j<3; j++) {
+          row.push(<TouchableOpacity onPress={() => this.buttonPressed(nums[i][j])}>
+            <Text style={styles.font}>{nums[i][j]}</Text>
+            </TouchableOpacity>)
+        }
+        rows.push(<View style={styles.row}>{row}</View>)
+      }
+
+      let operations = ['/', 'x', '-', '+']
+      let ops = []
+      for (let i=0; i<4; i++) {
+        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operation[i])}>
+          <Text style={styles.ops}>{operations[i]}</Text>
+        </TouchableOpacity>)
+      }
       const {navigate} = this.props.navigation;
       const name = this.props.navigation.state.params.name
       return (
         <View style={styles.container}>
           <Button onPress={() => navigate('Home')} title="<<"/>
           <View style={styles.result}>
-            <Text>6974</Text>
+            <Text>{this.state.resultText}</Text>
           </View>
           <View style={styles.calculation}>
-            <Text>6974</Text>
+            <Text></Text>
           </View>
           <View style={styles.buttons}>
             <View style={styles.numbers}>
-              <View style={styles.row}>
-                <Button title="7"/>
+              {rows}
+              {/* <View style={styles.row}>
+                <Button onPress={() => setResult(7)} title="7"/>
                 <Button title="8"/>
                 <Button title="9"/>
               </View>
@@ -77,13 +140,10 @@ class CalculationScreen extends Component {
                 <Button title="0"/>
                 <Button title="AC"/>
                 <Button title="."/>
-              </View>
+              </View> */}
             </View>
             <View style={styles.operations}>
-                <Button title="/"/>
-                <Button title="x"/>
-                <Button title="-"/>
-                <Button title="+"/>
+                {ops}
             </View>
           </View>
         </View>
