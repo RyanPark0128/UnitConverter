@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import { Alert, StyleSheet, Button, View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
   },
   font: {
     fontSize: 30
+  },
+  numbut: {
+    alignItems: "stretch",
+    flex: 2
   }
 })
 
@@ -56,7 +60,8 @@ class CalculationScreen extends Component {
       super()
       this.state = {
         resultText: "",
-        period: true
+        answer: "",
+        equation: []
       }
     }
     static navigationOptions = {
@@ -64,26 +69,55 @@ class CalculationScreen extends Component {
     };
 
     buttonPressed(text) {
-      if (text == ".") {
-        if (this.state.period === false) {
-          this.setState({
-            resultText: 0
-          })
-        }
-        if (this.state.period === true) {
+      let result = this.state.resultText
+      let ELength = result[result.length - 1]
+      if (text === ".") {
+        if (this.state.equation[this.state.equation.length - 1].includes(".")) {
+          Alert.alert(
+            "Cannot be two period"
+          )
+        } 
+        else {
           this.setState({
             resultText: this.state.resultText + text,
-            period: false
+            equation: [...this.state.equation, text]
+          })
+
+        }
+      } else if (text === "AC") {
+        this.setState({
+          resultText: "",
+          equation: []
+        })
+      } else if (text === "x" || text === "/" || text === "+" || text === "-") {
+        if (ELength === "x" || ELength === "/" || ELength === "+" || ELength === "-" ) {
+          Alert.alert(ELength)
+        } else {
+          this.setState({
+            resultText: this.state.resultText + " " + text + " ",
+            equation: [...this.state.equation, text]
           })
         }
+
+      } else if (text === "=") {
+
+        // for (i=0; i< calculation.length; i++) {
+        //   if (calculation[i] === "x") {
+        //     equation.push(calculation[i-1] * calculation[i+1])
+        //   }
+        //   else if (calculation[i] === "/") {
+        //     equation.push(calculation[i-1] / calculation[i+1])
+        //   }  
+        // }
+        Alert.alert(this.state.equation)
+
       }
-      if (text === "AC") {
-        this.setState({
-          resultText: ""
-        })
-      } else {
+      // create loop where it uses recursion to calculate * and / first and calculates + and - 
+      else {
+
       this.setState({
-        resultText: this.state.resultText + text
+        resultText: this.state.resultText + text,
+        equation: [...this.state.equation, text]
       })
       }
     }
@@ -93,17 +127,17 @@ class CalculationScreen extends Component {
       for(let i = 0; i < 4; i++) {
         let row = []
         for(let j=0; j<3; j++) {
-          row.push(<TouchableOpacity onPress={() => this.buttonPressed(nums[i][j])}>
+          row.push(<TouchableOpacity style={styles.numbut} onPress={() => this.buttonPressed(nums[i][j])}>
             <Text style={styles.font}>{nums[i][j]}</Text>
             </TouchableOpacity>)
         }
         rows.push(<View style={styles.row}>{row}</View>)
       }
 
-      let operations = ['/', 'x', '-', '+']
+      let operations = ['/', 'x', '-', '+', '=']
       let ops = []
-      for (let i=0; i<4; i++) {
-        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operation[i])}>
+      for (let i=0; i<5; i++) {
+        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operations[i])}>
           <Text style={styles.ops}>{operations[i]}</Text>
         </TouchableOpacity>)
       }
@@ -116,31 +150,11 @@ class CalculationScreen extends Component {
             <Text>{this.state.resultText}</Text>
           </View>
           <View style={styles.calculation}>
-            <Text></Text>
+            <Text>{this.state.answer}</Text>
           </View>
           <View style={styles.buttons}>
             <View style={styles.numbers}>
               {rows}
-              {/* <View style={styles.row}>
-                <Button onPress={() => setResult(7)} title="7"/>
-                <Button title="8"/>
-                <Button title="9"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="4"/>
-                <Button title="5"/>
-                <Button title="6"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="1"/>
-                <Button title="2"/>
-                <Button title="3"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="0"/>
-                <Button title="AC"/>
-                <Button title="."/>
-              </View> */}
             </View>
             <View style={styles.operations}>
                 {ops}
