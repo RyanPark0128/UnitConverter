@@ -52,8 +52,6 @@ const styles = StyleSheet.create({
   }
 })
 
-
-
 class CalculationScreen extends Component {
     
     constructor() {
@@ -61,18 +59,17 @@ class CalculationScreen extends Component {
       this.state = {
         resultText: "",
         answer: "",
-        equation: []
+        validation: "",
+        equation: [],
+        oper: true
       }
     }
     static navigationOptions = {
         header: null,
     };
-
     buttonPressed(text) {
-      let result = this.state.resultText
-      let ELength = result[result.length - 1]
       if (text === ".") {
-        if (this.state.equation[this.state.equation.length - 1].includes(".")) {
+        if (this.state.validation.includes(".")) {
           Alert.alert(
             "Cannot be two period"
           )
@@ -80,44 +77,71 @@ class CalculationScreen extends Component {
         else {
           this.setState({
             resultText: this.state.resultText + text,
-            equation: [...this.state.equation, text]
+            validation: this.state.validation + text
           })
-
         }
       } else if (text === "AC") {
         this.setState({
           resultText: "",
-          equation: []
+          equation: [],
+          validation: "",
+          oper: true,
+          answer: ""
         })
       } else if (text === "x" || text === "/" || text === "+" || text === "-") {
-        if (ELength === "x" || ELength === "/" || ELength === "+" || ELength === "-" ) {
-          Alert.alert(ELength)
-        } else {
+        if (this.state.oper === false) {
           this.setState({
             resultText: this.state.resultText + " " + text + " ",
-            equation: [...this.state.equation, text]
+            equation: [...this.state.equation, this.state.validation, text],
+            validation: "",
+            oper: true
+          })
+         }
+      }
+        else if (text === "=") {
+          if (this.state.oper === false) {
+            this.setState({
+              equation: [...this.state.equation, this.state.validation],
+            }, () => {
+              let copy = this.state.equation
+              while(copy.includes("x") || copy.includes("/")) {
+                for (i=0; i< copy.length; i++) {
+                  if (copy[i] === "x") {
+                    copy.splice((i-1),3, copy[i-1] * copy[i+1])
+                    break;
+                  }
+                  if (copy[i] === "/") {
+                    copy.splice((i-1),3, copy[i-1] / copy[i+1])
+                    break;
+                  }
+                }
+              }
+              while(copy.includes("+") || copy.includes("-")) {
+                for (i=0; i<copy.length; i++) {
+                  if (copy[i] === "+") {
+                    copy.splice((i-1),3, Number(copy[i-1]) + Number(copy[i+1]))
+                    break;
+                  }
+                  if (copy[i] === "-") {
+                    copy.splice((i-1),3, Number(copy[i-1]) - Number(copy[i+1]))
+                    break;
+                  }
+                }
+              }
+              this.setState({
+                resultText: "",
+                validation: copy,
+                equation: [],
+                answer: copy
+              })
           })
         }
-
-      } else if (text === "=") {
-
-        // for (i=0; i< calculation.length; i++) {
-        //   if (calculation[i] === "x") {
-        //     equation.push(calculation[i-1] * calculation[i+1])
-        //   }
-        //   else if (calculation[i] === "/") {
-        //     equation.push(calculation[i-1] / calculation[i+1])
-        //   }  
-        // }
-        Alert.alert(this.state.equation)
-
-      }
-      // create loop where it uses recursion to calculate * and / first and calculates + and - 
+      }  
       else {
-
       this.setState({
         resultText: this.state.resultText + text,
-        equation: [...this.state.equation, text]
+        validation: this.state.validation + text,
+        oper : false
       })
       }
     }
@@ -133,7 +157,6 @@ class CalculationScreen extends Component {
         }
         rows.push(<View style={styles.row}>{row}</View>)
       }
-
       let operations = ['/', 'x', '-', '+', '=']
       let ops = []
       for (let i=0; i<5; i++) {
