@@ -49,7 +49,6 @@ class CalculationScreen extends Component {
       const name = this.props.navigation.state.params.name
       return (
         <View style={styles.container}>
-          <Button onPress={() => navigate('Home')} title="<<"/>
           <View style={styles.result}>
             <Text>6974</Text>
           </View>
@@ -86,6 +85,7 @@ class CalculationScreen extends Component {
                 <Button title="+"/>
             </View>
           </View>
+          <Button onPress={() => navigate('Home')} title="<<"/>
         </View>
       );
     }
