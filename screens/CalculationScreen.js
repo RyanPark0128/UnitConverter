@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import { Alert, StyleSheet, Button, View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
@@ -45,10 +45,12 @@ const styles = StyleSheet.create({
   },
   font: {
     fontSize: 30
+  },
+  numbut: {
+    alignItems: "stretch",
+    flex: 2
   }
 })
-
-
 
 class CalculationScreen extends Component {
     
@@ -56,34 +58,90 @@ class CalculationScreen extends Component {
       super()
       this.state = {
         resultText: "",
-        period: true
+        answer: "",
+        validation: "",
+        equation: [],
+        oper: true
       }
     }
     static navigationOptions = {
         header: null,
     };
-
     buttonPressed(text) {
-      if (text == ".") {
-        if (this.state.period === false) {
-          this.setState({
-            resultText: 0
-          })
-        }
-        if (this.state.period === true) {
+      if (text === ".") {
+        if (this.state.validation.includes(".")) {
+          Alert.alert(
+            "Cannot be two period"
+          )
+        } 
+        else {
           this.setState({
             resultText: this.state.resultText + text,
-            period: false
+            validation: this.state.validation + text
           })
         }
-      }
-      if (text === "AC") {
+      } else if (text === "AC") {
         this.setState({
-          resultText: ""
+          resultText: "",
+          equation: [],
+          validation: "",
+          oper: true,
+          answer: ""
         })
-      } else {
+      } else if (text === "x" || text === "/" || text === "+" || text === "-") {
+        if (this.state.oper === false) {
+          this.setState({
+            resultText: this.state.resultText + " " + text + " ",
+            equation: [...this.state.equation, this.state.validation, text],
+            validation: "",
+            oper: true
+          })
+         }
+      }
+        else if (text === "=") {
+          if (this.state.oper === false) {
+            this.setState({
+              equation: [...this.state.equation, this.state.validation],
+            }, () => {
+              let copy = this.state.equation
+              while(copy.includes("x") || copy.includes("/")) {
+                for (i=0; i< copy.length; i++) {
+                  if (copy[i] === "x") {
+                    copy.splice((i-1),3, copy[i-1] * copy[i+1])
+                    break;
+                  }
+                  if (copy[i] === "/") {
+                    copy.splice((i-1),3, copy[i-1] / copy[i+1])
+                    break;
+                  }
+                }
+              }
+              while(copy.includes("+") || copy.includes("-")) {
+                for (i=0; i<copy.length; i++) {
+                  if (copy[i] === "+") {
+                    copy.splice((i-1),3, Number(copy[i-1]) + Number(copy[i+1]))
+                    break;
+                  }
+                  if (copy[i] === "-") {
+                    copy.splice((i-1),3, Number(copy[i-1]) - Number(copy[i+1]))
+                    break;
+                  }
+                }
+              }
+              this.setState({
+                resultText: "",
+                validation: copy,
+                equation: [],
+                answer: copy
+              })
+          })
+        }
+      }  
+      else {
       this.setState({
-        resultText: this.state.resultText + text
+        resultText: this.state.resultText + text,
+        validation: this.state.validation + text,
+        oper : false
       })
       }
     }
@@ -93,17 +151,16 @@ class CalculationScreen extends Component {
       for(let i = 0; i < 4; i++) {
         let row = []
         for(let j=0; j<3; j++) {
-          row.push(<TouchableOpacity onPress={() => this.buttonPressed(nums[i][j])}>
+          row.push(<TouchableOpacity style={styles.numbut} onPress={() => this.buttonPressed(nums[i][j])}>
             <Text style={styles.font}>{nums[i][j]}</Text>
             </TouchableOpacity>)
         }
         rows.push(<View style={styles.row}>{row}</View>)
       }
-
-      let operations = ['/', 'x', '-', '+']
+      let operations = ['/', 'x', '-', '+', '=']
       let ops = []
-      for (let i=0; i<4; i++) {
-        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operation[i])}>
+      for (let i=0; i<5; i++) {
+        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operations[i])}>
           <Text style={styles.ops}>{operations[i]}</Text>
         </TouchableOpacity>)
       }
@@ -116,31 +173,11 @@ class CalculationScreen extends Component {
             <Text>{this.state.resultText}</Text>
           </View>
           <View style={styles.calculation}>
-            <Text></Text>
+            <Text>{this.state.answer}</Text>
           </View>
           <View style={styles.buttons}>
             <View style={styles.numbers}>
               {rows}
-              {/* <View style={styles.row}>
-                <Button onPress={() => setResult(7)} title="7"/>
-                <Button title="8"/>
-                <Button title="9"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="4"/>
-                <Button title="5"/>
-                <Button title="6"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="1"/>
-                <Button title="2"/>
-                <Button title="3"/>
-              </View>
-              <View style={styles.row}>
-                <Button title="0"/>
-                <Button title="AC"/>
-                <Button title="."/>
-              </View> */}
             </View>
             <View style={styles.operations}>
                 {ops}
