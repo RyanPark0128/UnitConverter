@@ -17,17 +17,18 @@ const styles = StyleSheet.create({
     alignItems : "flex-end"
   },
   buttons: {
-    flex:7,
+    flex:3,
     flexDirection: "row",
-    backgroundColor: "black"
+    marginLeft: 10,
+    marginRight: 10
   },
   numbers: {
     flex: 3,
-    backgroundColor : "yellow"
+    backgroundColor : "grey"
   },
   operations: {
     flex:1,
-    backgroundColor : "black",
+    backgroundColor : "grey",
     justifyContent : "space-around",
     alignItems: "center",
     
@@ -37,18 +38,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: "center",
-    fontSize: 30
+    fontSize: 30,
   },
   ops: {
     color: "white",
     fontSize: 30
   },
   font: {
-    fontSize: 30
+    fontSize: 30,
+    color: "white"
   },
   numbut: {
     alignItems: "stretch",
-    flex: 2
+    flex: 2,
   }
 })
 
@@ -152,7 +154,7 @@ class CalculationScreen extends Component {
 
     render() {
       let rows = []
-      let nums = [[1,2,3],[4,5,6],[7,8,9],[0, "AC", "."]]
+      let nums = [[7,8,9],[4,5,6],[1,2,3],[0, "AC", "."]]
       for(let i = 0; i < 4; i++) {
         let row = []
         for(let j=0; j<3; j++) {
