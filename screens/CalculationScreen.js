@@ -61,12 +61,15 @@ class CalculationScreen extends Component {
         answer: "",
         validation: "",
         equation: [],
-        oper: true
+        oper: true,
+        selected: "button"
       }
     }
+
     static navigationOptions = {
         header: null,
     };
+
     buttonPressed(text) {
       if (text === ".") {
         if (this.state.validation.includes(".")) {
@@ -77,7 +80,8 @@ class CalculationScreen extends Component {
         else {
           this.setState({
             resultText: this.state.resultText + text,
-            validation: this.state.validation + text
+            validation: this.state.validation + text,
+            oper: true
           })
         }
       } else if (text === "AC") {
@@ -145,6 +149,7 @@ class CalculationScreen extends Component {
       })
       }
     }
+
     render() {
       let rows = []
       let nums = [[1,2,3],[4,5,6],[7,8,9],[0, "AC", "."]]
@@ -165,9 +170,12 @@ class CalculationScreen extends Component {
         </TouchableOpacity>)
       }
       const {navigate} = this.props.navigation;
-      const name = this.props.navigation.state.params.name
+
       return (
         <View style={styles.container}>
+          <View>
+            <Text></Text>
+          </View>
           <View style={styles.result}>
             <Text>{this.state.resultText}</Text>
           </View>
