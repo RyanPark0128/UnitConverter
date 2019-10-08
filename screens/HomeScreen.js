@@ -1,37 +1,65 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Input, colors, ThemeProvider } from 'react-native-elements';
-// import { SearchBar } from 'react-native-elements';
 import SearchBar from "react-native-dynamic-search-bar";
 import { ThemeColors } from 'react-navigation';
 import * as Font from 'expo-font';
-
-
+import { StyleSheet, Text, View, Alert, AsyncStorage } from 'react-native';
+import { Button, Input, ThemeProvider } from 'react-native-elements'
 
 const category = [
   {
     id: 1,
     name: "Length",
+    unit : {
+      kilometer : "km",
+      meter : "m",
+      centimeter : "cm",
+      milimeter : "mm",
+	    mile : "mi",
+      yard : "yd",
+      foot : "ft",
+      inch : "in"
+    }
   },
 
   {
     id: 2,
     name: "Temperature",
+    unit : {
+      celcius : "C",
+      fahrenheit : "F",
+      kelvin : "K",
+    }
   },
-
   {
     id: 3,
     name: "Weight"
   },
-
   {
     id: 4,
     name: "Volume",
+    unit : {
+      cubicMeter : "m3",
+      liter : "L",
+      milliliter : "ml",
+	    cubicFeet : "mi",
+      cubicInch : "yd",
+    }
   },
-  
   {
-    id: 5,
+    id: 4,
     name: "Area",
+    unit : {
+      squareKilometer : "km",
+      sqaureMeter : "m",
+      squareMile : "mi",
+      squareYard : "yd",
+      sqaureFeet : "ft",
+      squareInch : "in",
+      acre : "acre",
+      hectare : "hectare"
+    }
   },
 ]
 
@@ -82,23 +110,38 @@ class HomeScreen extends Component {
     }
 
     //To hide the ActionBar/NavigationBar
+    constructor(props) {
+      super(props);
+      this.state = {
+        selected: undefined
+      };
+    }
+
     static navigationOptions = {
       header: null,
     };
 
-    //search bar
-    // state = {
-    //   search: '',
-    // };
-    // updateSearch = search => {
-    //   this.setState({ search });
-    // }
-    
+    onValueChange(value) {
+      this.setState({
+        selected: undefined
+      });
+    }
 
     render(){
-      //search bar
-      //const { search } = this.state;
-
+      let initial = {
+        id: 1,
+        name: "Length",
+        unit : {
+          kilometer : "km",
+          meter : "m",
+          centimeter : "cm",
+          milimeter : "mm",
+          mile : "mi",
+          yard : "yd",
+          foot : "ft",
+          inch : "in"
+        }
+      }
       const { navigate } = this.props.navigation
       const ListCate = category.map((cat) =>
       <ThemeProvider theme={theme}>
@@ -149,6 +192,17 @@ class HomeScreen extends Component {
           <View>
               {ListCate}
           </View>
+          <View style={styles.searchBar}>
+            <Input
+                placeholder='  Search'
+                leftIcon={{ type: 'font-awesome', name: 'search' }}
+                style={styles.input}
+            />
+          </View>
+
+            <View>
+                {ListCate}
+            </View>
         </View>
       )
     }

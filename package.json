@@ -9,11 +9,10 @@
   },
   "dependencies": {
     "expo": "^34.0.1",
+    "native-base": "^2.13.8",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
-    "react-native-dynamic-search-bar": "^0.2.1",
-    "react-native-dynamic-vector-icons": "WrathChaos/react-native-dynamic-vector-icons#expo",
     "react-native-elements": "^1.2.0",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-iphone-x-helper": "^1.2.1",
