@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Button, Input, colors, ThemeProvider } from 'react-native-elements';
 import SearchBar from "react-native-dynamic-search-bar";
 import { ThemeColors } from 'react-navigation';
 import * as Font from 'expo-font';
@@ -192,17 +190,7 @@ class HomeScreen extends Component {
           <View>
               {ListCate}
           </View>
-          <View style={styles.searchBar}>
-            <Input
-                placeholder='  Search'
-                leftIcon={{ type: 'font-awesome', name: 'search' }}
-                style={styles.input}
-            />
-          </View>
-
-            <View>
-                {ListCate}
-            </View>
+          
         </View>
       )
     }
