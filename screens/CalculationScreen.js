@@ -168,6 +168,16 @@ class CalculationScreen extends Component {
       const name = this.props.navigation.state.params.name
       return (
         <View style={styles.container}>
+          <View>
+            <Text></Text>
+          </View>
+          <View>
+            <Text>
+            </Text>
+          </View>
+          <View>
+            <Text></Text>
+          </View>
           <View style={styles.result}>
             <Text>{this.state.resultText}</Text>
           </View>
