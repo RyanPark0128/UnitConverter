@@ -1,34 +1,58 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Button, Input, colors, ThemeProvider } from 'react-native-elements'
-import { ThemeColors } from 'react-navigation';
-
+import { StyleSheet, Text, View, Alert, AsyncStorage } from 'react-native';
+import { Button, Input, ThemeProvider } from 'react-native-elements'
 
 
 const category = [
   {
     id: 1,
     name: "Length",
+    unit : {
+      kilometer : "km",
+      meter : "m",
+      centimeter : "cm",
+      milimeter : "mm",
+	    mile : "mi",
+      yard : "yd",
+      foot : "ft",
+      inch : "in"
+    }
   },
 
   {
     id: 2,
     name: "Temperature",
+    unit : {
+      celcius : "C",
+      fahrenheit : "F",
+      kelvin : "K",
+    }
   },
-
   {
     id: 3,
-    name: "Currency"
-  },
-
-  {
-    id: 4,
     name: "Volume",
+    unit : {
+      cubicMeter : "m3",
+      liter : "L",
+      milliliter : "ml",
+	    cubicFeet : "mi",
+      cubicInch : "yd",
+    }
   },
   
   {
-    id: 5,
+    id: 4,
     name: "Area",
+    unit : {
+      squareKilometer : "km",
+      sqaureMeter : "m",
+      squareMile : "mi",
+      squareYard : "yd",
+      sqaureFeet : "ft",
+      squareInch : "in",
+      acre : "acre",
+      hectare : "hectare"
+    }
   },
 ]
 
@@ -73,11 +97,38 @@ const theme = {
 
 class HomeScreen extends Component {
     //To hide the ActionBar/NavigationBar
+    constructor(props) {
+      super(props);
+      this.state = {
+        selected: undefined
+      };
+    }
+
     static navigationOptions = {
       header: null,
     };
 
+    onValueChange(value) {
+      this.setState({
+        selected: undefined
+      });
+    }
+
     render(){
+      let initial = {
+        id: 1,
+        name: "Length",
+        unit : {
+          kilometer : "km",
+          meter : "m",
+          centimeter : "cm",
+          milimeter : "mm",
+          mile : "mi",
+          yard : "yd",
+          foot : "ft",
+          inch : "in"
+        }
+      }
       const { navigate } = this.props.navigation
       const ListCate = category.map((cat) =>
       <ThemeProvider theme={theme}>
@@ -128,7 +179,6 @@ class HomeScreen extends Component {
             <View>
                 {ListCate}
             </View>
-
         </View>
       )
     }
