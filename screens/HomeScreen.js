@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import SearchBar from "react-native-dynamic-search-bar";
 import { ThemeColors } from 'react-navigation';
 import * as Font from 'expo-font';
-import { StyleSheet, Text, View, Alert, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Button, Input, ThemeProvider } from 'react-native-elements'
+
 
 const category = [
   {
     id: 1,
     name: "Length",
-    unit : {
+    prefix: "km, ft, in...",
+    unit : 
+    {
       kilometer : "km",
       meter : "m",
       centimeter : "cm",
@@ -24,20 +27,27 @@ const category = [
   {
     id: 2,
     name: "Temperature",
-    unit : {
+    prefix: "K, F, C...",
+    unit : 
+    {
       celcius : "C",
       fahrenheit : "F",
       kelvin : "K",
     }
   },
+
   {
     id: 3,
-    name: "Weight"
+    name: "Weight",
+    prefix: "g, lb, oz..."
   },
+
   {
     id: 4,
     name: "Volume",
-    unit : {
+    prefix: "m3, ml3, L...",
+    unit : 
+    {
       cubicMeter : "m3",
       liter : "L",
       milliliter : "ml",
@@ -45,10 +55,13 @@ const category = [
       cubicInch : "yd",
     }
   },
+
   {
-    id: 4,
+    id: 5,
     name: "Area",
-    unit : {
+    prefix: "m2, ft2, in2...",
+    unit : 
+    {
       squareKilometer : "km",
       sqaureMeter : "m",
       squareMile : "mi",
@@ -75,24 +88,24 @@ const styles = StyleSheet.create({
   //header
   headerAlign: {
     paddingTop: 30,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   headerText: {
     fontSize: 40,
     fontFamily: 'Poppins-Bold',
   },
-})
 
-const theme = {
-  Button: {
-    titleStyle: {
-      //in button text color
-      color: 'black',
-      //in button font family
-      fontFamily: 'Poppins-Bold',
-    }
-  },
-}
+  //header background
+  shapeBackground: {
+    position: 'absolute',
+    top: -30,
+    left: -3500,
+    width: 7000,
+    height: 190,
+    backgroundColor: '#E0E0E0'
+  }
+
+})
 
 class HomeScreen extends Component {
     //import font and check
@@ -102,6 +115,7 @@ class HomeScreen extends Component {
     async componentDidMount() {
       await Font.loadAsync({
         'Poppins-Bold': require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
+        'Poppins-Medium': require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
       });
   
       this.setState({ fontLoaded: true });
@@ -142,55 +156,68 @@ class HomeScreen extends Component {
       }
       const { navigate } = this.props.navigation
       const ListCate = category.map((cat) =>
-      <ThemeProvider theme={theme}>
-        {
-          this.state.fontLoaded ? (
-          <Button
-          type="clear"
-          title={cat.name}
-          
-          buttonStyle={{
-            //dropshadow
-            borderWidth: 1,
-            borderRadius: 4,
-            borderColor: 'white',
-            borderBottomWidth: 0,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.15,
-            shadowRadius: 15,
-            elevation: 1,
-            // marginLeft: 5,
-            // marginRight: 5,
-            // marginTop: 10,
-            
-            //in button text alignment
-            justifyContent: 'flex-start', 
-            backgroundColor: 'white',
-            padding: 10,
-            marginTop: 20
-          }}
-          onPress={() => navigate('Calculation', {name: cat.name})}>
-          </Button>
-        ) : null
-      }
-      </ThemeProvider>
+      <View>
+       {
+         this.state.fontLoaded ? (
+         <TouchableOpacity
+         type="clear"
+         style={{
+           flexDirection: 'row',
+           //dropshadow
+           borderWidth: 1,
+           borderRadius: 4,
+           borderColor: 'white',
+           borderBottomWidth: 0,
+           shadowColor: '#000',
+           shadowOffset: { width: 0, height: 10 },
+           shadowOpacity: 0.15,
+           shadowRadius: 15,
+           elevation: 1,
+           // marginLeft: 5,
+           // marginRight: 5,
+           // marginTop: 10,
+           
+           //in button text alignment
+           backgroundColor: 'white',
+           padding: 10,
+           marginTop: 25
+         }}
+         onPress={() => navigate('Calculation', {name: cat.name, unit: cat.unit})}>
+         <Text style={{
+           flex:3,
+           color: 'black',
+           fontSize: 20,
+           fontFamily: 'Poppins-Bold',
+           }}>{cat.name}
+         </Text>
+         <Text style={{
+           flex:1,
+           color: 'grey',
+           fontSize: 10,
+           fontFamily: 'Poppins-Poppins-Medium',
+           }}>{cat.prefix}
+          </Text>
+         </TouchableOpacity>
+       ) : null
+     }
+     </View>
     )
 
       return (
         <View style={styles.container}>
-        
-        <View style={styles.headerAlign}>
-          {
-            this.state.fontLoaded ? (
-              <Text style={styles.headerText}>Converter</Text>
-            ) : null
-          }  
-        </View>
+          <View style={styles.shapeBackground}></View>
+          <View style={styles.headerAlign}>
+            {
+              this.state.fontLoaded ? (
+                <Text style={styles.headerText}>Unit Converter</Text>
+              ) : null
+            }  
+          </View>
+
           <View>
               {ListCate}
           </View>
-          
+
         </View>
       )
     }

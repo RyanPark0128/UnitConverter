@@ -1,60 +1,95 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Button, View, Text } from 'react-native';
+import { Alert, StyleSheet, Button, View, Text, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-  },
-  result: {
     flex: 1,
-    backgroundColor : "red",
-    alignItems : "flex-end"
+    marginTop: 30,
+    marginBottom: 30,
+    marginHorizontal: 16,
+    backgroundColor: 'white',
+  },
+
+  //header
+  headerAlign: {
+    paddingTop: 30,
+    paddingBottom: 45,
+
+  },
+  headerText: {
+    fontSize: 40,
+    fontFamily: 'Poppins-Bold',
+  },
+  
+  //small container
+  smallContainer: {
+    //dropshadow
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: 'transparent',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.35,
+    shadowRadius: 15,
+    elevation: 1,
+    flex:3
+  },
+
+  calculatorLayout: {
+    flex:1,
+    backgroundColor:"grey"
+  },
+
+  result: {
+    backgroundColor : "white",
+    alignItems : "flex-end",
   },
   calculation: {
-    flex: 2,
-    backgroundColor : "green",
-    alignItems : "flex-end"
+    backgroundColor : "red",
+    alignItems : "flex-end",
   },
   buttons: {
-    flex:3,
     flexDirection: "row",
-    marginLeft: 10,
-    marginRight: 10
   },
   numbers: {
-    flex: 3,
-    backgroundColor : "grey"
-  },
-  operations: {
-    flex:1,
+    flex: 1,
     backgroundColor : "grey",
-    justifyContent : "space-around",
-    alignItems: "center",
     
   },
+
   row: {
     flexDirection: "row",
-    flex: 1,
     justifyContent: 'space-around',
-    alignItems: "center",
     fontSize: 30,
-  },
-  ops: {
-    color: "white",
-    fontSize: 30
+    marginBottom:23
   },
   font: {
     fontSize: 30,
-    color: "white"
+    color: "white",
   },
   numbut: {
-    alignItems: "stretch",
-    flex: 2,
+    width:30,
+    alignItems: "center"
   }
 })
 
+
 class CalculationScreen extends Component {
+  //import font and check
+  state = {
+    fontLoaded: false,
+  };
+  async componentDidMount() {
+    await Font.loadAsync({
+      'Poppins-Bold': require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
+      'Poppins-Medium': require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
+    });
+
+    this.setState({ fontLoaded: true });
+  }
     
     constructor() {
       super()
@@ -86,7 +121,7 @@ class CalculationScreen extends Component {
             oper: true
           })
         }
-      } else if (text === "AC") {
+      } else if (text === "C") {
         this.setState({
           resultText: "",
           equation: [],
@@ -94,7 +129,7 @@ class CalculationScreen extends Component {
           oper: true,
           answer: ""
         })
-      } else if (text === "x" || text === "/" || text === "+" || text === "-") {
+      } else if (text === "x" || text === "÷" || text === "+" || text === "-") {
         if (this.state.oper === false) {
           this.setState({
             resultText: this.state.resultText + " " + text + " ",
@@ -110,13 +145,13 @@ class CalculationScreen extends Component {
               equation: [...this.state.equation, this.state.validation],
             }, () => {
               let copy = this.state.equation
-              while(copy.includes("x") || copy.includes("/")) {
+              while(copy.includes("x") || copy.includes("÷")) {
                 for (i=0; i< copy.length; i++) {
                   if (copy[i] === "x") {
                     copy.splice((i-1),3, copy[i-1] * copy[i+1])
                     break;
                   }
-                  if (copy[i] === "/") {
+                  if (copy[i] === "÷") {
                     copy.splice((i-1),3, copy[i-1] / copy[i+1])
                     break;
                   }
@@ -154,45 +189,49 @@ class CalculationScreen extends Component {
 
     render() {
       let rows = []
-      let nums = [[7,8,9],[4,5,6],[1,2,3],[0, "AC", "."]]
-      for(let i = 0; i < 4; i++) {
+      let nums = [["C", "", "","÷"],[7,8,9,"×"],[4,5,6,"-"],[1,2,3,"+"],[".", 0, "<", "="]]
+      for(let i = 0; i < 5; i++) {
         let row = []
-        for(let j=0; j<3; j++) {
+        for(let j=0; j<4; j++) {
           row.push(<TouchableOpacity style={styles.numbut} onPress={() => this.buttonPressed(nums[i][j])}>
             <Text style={styles.font}>{nums[i][j]}</Text>
             </TouchableOpacity>)
         }
         rows.push(<View style={styles.row}>{row}</View>)
       }
-      let operations = ['/', 'x', '-', '+', '=']
-      let ops = []
-      for (let i=0; i<5; i++) {
-        ops.push(<TouchableOpacity onPress={() => this.buttonPressed(operations[i])}>
-          <Text style={styles.ops}>{operations[i]}</Text>
-        </TouchableOpacity>)
-      }
       const {navigate} = this.props.navigation;
 
       return (
+        //safe area
         <View style={styles.container}>
-          <View>
-            <Text></Text>
+
+          {/* haeder */}
+          <View style={styles.headerAlign}>
+            <Text style={styles.headerText}>Length</Text>
           </View>
-          <View style={styles.result}>
-            <Text>{this.state.resultText}</Text>
-          </View>
-          <View style={styles.calculation}>
-            <Text>{this.state.answer}</Text>
-          </View>
-          <View style={styles.buttons}>
-            <View style={styles.numbers}>
-              {rows}
+          <Button
+            onPress={() => navigate('Home')} 
+            title= "<<"
+            />
+          
+          {/* container */}
+          <ScrollView style={styles.smallContainer}>
+            <View style={styles.result}>
+              <TouchableOpacity style={{margin: 50,}}>
+                <Text>{this.state.resultText}</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.operations}>
-                {ops}
+            <View style={styles.calculation}>
+              <Text>{this.state.answer}</Text>
             </View>
-          </View>
-          <Button onPress={() => navigate('Home')} title="<<"/>
+            </ScrollView>
+            <View style={styles.calculatorLayout}>
+              <View style={styles.buttons}>
+                <View style={styles.numbers}>
+                  {rows}
+                </View>
+              </View>
+            </View>
         </View>
       );
     }
